@@ -4,16 +4,13 @@ from models import db, User, Book, book_schema, books_schema
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
-@api.route('/getdata')
-def getdata():
-    return {'yee': 'haw'}
 
-# Insert car into database
+
 @api.route('/books', methods = ['POST'])
 @token_required
 def create_book_data(current_user_token):
     isbn = request.json['isbn']
-    book_author = request.json['book_author']
+    author_name = request.json['author_name']
     book_title = request.json['book_title']
     book_length = request.json['book_length']
     hc_pb = request.json['hc_pb']
@@ -21,7 +18,7 @@ def create_book_data(current_user_token):
 
     print(f'BIG TESTER: {current_user_token.token}')
 
-    book = Book(isbn, book_author, book_title, book_length, hc_pb, user_token = user_token )
+    book = Book(isbn, author_name, book_title, book_length, hc_pb, user_token=user_token )
 
     db.session.add(book)
     db.session.commit()
@@ -29,7 +26,6 @@ def create_book_data(current_user_token):
     response = book_schema.dump(book)
     return jsonify(response)
 
-# Retrieve all cars
 @api.route('/books', methods = ['GET'])
 @token_required
 def get_books(current_user_token):
@@ -38,22 +34,19 @@ def get_books(current_user_token):
     response = books_schema.dump(books)
     return jsonify(response)
 
-# Retrieve a single car
-@api.route('/books/<id>', methods = ['GET'])
+@api.route('/books', methods = ['GET'])
 @token_required
-def get_single_book(current_user_token, id):
+def get_single_book(current_user_token):
     book = Book.query.get(id)
     response = book_schema.dump(book)
     return jsonify(response)
 
-# Update contact info
-# 'PUT' is the replace command
 @api.route('/books/<id>', methods = ['POST','PUT'])
 @token_required
 def update_book(current_user_token,id):
     book = Book.query.get(id) 
     book.isbn = request.json['isbn']
-    book.book_author = request.json['book_author']
+    book.author_name = request.json['author_name']
     book.book_title = request.json['book_title']
     book.book_length = request.json['book_length']
     book.hc_pb = request.json['hc_pb']

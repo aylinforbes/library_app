@@ -51,16 +51,16 @@ class User(db.Model, UserMixin):
 class Book(db.Model):
     id = db.Column(db.String, primary_key = True)
     isbn = db.Column(db.String(200), nullable = False)
-    book_author = db.Column(db.String(200))
+    author_name = db.Column(db.String(200))
     book_title = db.Column(db.String(200))
     book_length = db.Column(db.String(200))
     hc_pb = db.Column(db.String(100))
     user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
 
-    def __init__(self, isbn, book_author, book_title, book_length, hc_pb, user_token, id = ''):
+    def __init__(self, isbn, author_name, book_title, book_length, hc_pb, user_token, id = ''):
         self.id = self.set_id()
         self.isbn = isbn
-        self.book_author = book_author
+        self.author_name = author_name
         self.book_title = book_title
         self.book_length = book_length
         self.hc_pb = hc_pb
